@@ -13,6 +13,8 @@ namespace CopyConf
 
         public static void SyncFolders(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions)
         {
+            SyncFiles(sourcePath, destinationPath, includedFileExtensions);
+            
             foreach (DirectoryInfo sourceFolder in sourcePath.EnumerateDirectories())
             {
                 var destFolder = new DirectoryInfo(Path.Combine(destinationPath.FullName, sourceFolder.Name));
@@ -21,8 +23,7 @@ namespace CopyConf
                     destFolder.Create();
                 }
 
-                SyncFolders(sourceFolder, destFolder, includedFileExtensions);
-                SyncFiles(sourceFolder, destFolder, includedFileExtensions);
+                SyncFolders(sourceFolder, destFolder, includedFileExtensions);                
             }
         }
 
