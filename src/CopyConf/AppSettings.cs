@@ -22,7 +22,7 @@ namespace CopyConf
         {
             return new AppSettings
             {
-                Include = settings["Include"] ?? ".json;.config"
+                Include = settings["Include"] ?? ".json;.config;.conf;.cfg;.yaml"
             };
         }
     }
