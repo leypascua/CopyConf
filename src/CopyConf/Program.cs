@@ -13,27 +13,47 @@ namespace CopyConf
 
         static int Main(string[] args)
         {
-            if (args.Length != 2)
+            if (args.Length < 2 || args.Length > 3)
             {
-                Console.WriteLine("Usage:");
-                Console.WriteLine("  {0} /path/to/source /path/to/destination ", typeof(Program).Assembly.GetName().Name);
-                Environment.Exit(PathNotFoundExitCode);
+                return ShowUsage();
             }
 
             return Execute(args);
+        }
+
+        private static int ShowUsage()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("  {0} /path/to/source /path/to/destination [--rootonly]", typeof(Program).Assembly.GetName().Name);
+            Environment.Exit(PathNotFoundExitCode);
+
+            return PathNotFoundExitCode;
         }
 
         private static int Execute(string[] args)
         {
             DirectoryInfo sourcePath = GetDirectory(args[SourcePathArgsIndex], "source");
             DirectoryInfo destinationPath = GetDirectory(args[DestinationPathArgsIndex], "destination", forceCreate: true);
+            bool isRecursive = true;
+
+            if (args.Length == 3)
+            {  
+                string rootOnlySwitch = args.Last();
+
+                if (rootOnlySwitch.ToLowerInvariant() != "--rootonly")
+                {
+                    return ShowUsage();
+                }
+
+                isRecursive = false;                
+            }
 
             string[] includedFileExtensions = (AppSettings.Current.Include ?? string.Empty)
                 .Split(new[] {';', ' ', ','}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(ext => ext.Trim())
                 .ToArray();
 
-            Helpers.SyncFolders(sourcePath, destinationPath, includedFileExtensions);
+            Helpers.SyncFolders(sourcePath, destinationPath, includedFileExtensions, isRecursive);
 
             return SuccessfulCompletionExitCode;
         }
