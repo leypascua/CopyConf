@@ -7,19 +7,22 @@ namespace CopyConf
     {
         const string DistFileExtension = ".dist";
 
-        public static void SyncFolders(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions)
+        public static void SyncFolders(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions, bool isRecursive = true)
         {
             SyncFiles(sourcePath, destinationPath, includedFileExtensions);
             
-            foreach (DirectoryInfo sourceFolder in sourcePath.EnumerateDirectories())
+            if (isRecursive)
             {
-                var destFolder = new DirectoryInfo(Path.Combine(destinationPath.FullName, sourceFolder.Name));
-                if (!destFolder.Exists)
+                foreach (DirectoryInfo sourceFolder in sourcePath.EnumerateDirectories())
                 {
-                    destFolder.Create();
-                }
+                    var destFolder = new DirectoryInfo(Path.Combine(destinationPath.FullName, sourceFolder.Name));
+                    if (!destFolder.Exists)
+                    {
+                        destFolder.Create();
+                    }
 
-                SyncFolders(sourceFolder, destFolder, includedFileExtensions);                
+                    SyncFolders(sourceFolder, destFolder, includedFileExtensions);
+                }
             }
         }
 
