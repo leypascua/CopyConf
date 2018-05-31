@@ -60,7 +60,7 @@ namespace CopyConf
 
         private static DirectoryInfo GetDirectory(string path, string context, bool forceCreate = false)
         {
-            var dinfo = new DirectoryInfo(path);
+            var dinfo = new DirectoryInfo(path.Replace("\"", string.Empty));
 
             if (!dinfo.Exists)
             {
