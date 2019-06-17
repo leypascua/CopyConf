@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CopyConf
@@ -7,9 +8,14 @@ namespace CopyConf
     {
         const string DistFileExtension = ".dist";
 
-        public static void SyncFolders(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions, bool isRecursive = true)
+        public static void SyncFolders(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions, bool isRecursive = true, VerboseOutput output = null)
         {
-            SyncFiles(sourcePath, destinationPath, includedFileExtensions);
+            if (output == null)
+            {
+                output = new VerboseOutput();
+            }
+
+            SyncFiles(sourcePath, destinationPath, includedFileExtensions, output);
             
             if (isRecursive)
             {
@@ -17,31 +23,33 @@ namespace CopyConf
                 {
                     var destFolder = new DirectoryInfo(Path.Combine(destinationPath.FullName, sourceFolder.Name));
                     if (!destFolder.Exists)
-                    {
+                    {                        
                         destFolder.Create();
+                        output.Debug($"Created folder: {destFolder.FullName}");
                     }
 
-                    SyncFolders(sourceFolder, destFolder, includedFileExtensions);
+                    SyncFolders(sourceFolder, destFolder, includedFileExtensions, true, output);
                 }
             }
         }
 
-        public static void SyncFiles(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions)
+        public static void SyncFiles(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string[] includedFileExtensions, VerboseOutput output)
         {
             foreach (string extensionFilename in includedFileExtensions)
             {
-                SyncFileExtension(sourcePath, destinationPath, "*" + extensionFilename);
-                SyncFileExtension(sourcePath, destinationPath, "*" + extensionFilename + DistFileExtension);
+                SyncFileExtension(output, sourcePath, destinationPath, "*" + extensionFilename);
+                SyncFileExtension(output, sourcePath, destinationPath, "*" + extensionFilename + DistFileExtension);
             }
 
             // delete all .dist files on destination.
             foreach (FileInfo distFile in destinationPath.EnumerateFiles("*" + DistFileExtension))
             {
                 distFile.Delete();
+                output.Debug($"Deleted unused file: {distFile.Name}");
             }
         }
 
-        public static void SyncFileExtension(DirectoryInfo sourcePath, DirectoryInfo destinationPath, string extensionFilename)
+        public static void SyncFileExtension(VerboseOutput output, DirectoryInfo sourcePath, DirectoryInfo destinationPath, string extensionFilename)
         {
             foreach (FileInfo sourceFile in sourcePath.EnumerateFiles(extensionFilename))
             {
@@ -51,6 +59,7 @@ namespace CopyConf
                 if (!destFile.Exists)
                 {
                     sourceFile.CopyTo(destFile.FullName);
+                    output.Debug($"Copied '{sourceFile.Name}' to '{destFile.FullName}'");
                 }
 
                 // if a non-dist file on source is newer than destination, copy.
@@ -59,6 +68,7 @@ namespace CopyConf
                     if (sourceFile.LastWriteTimeUtc > destFile.LastWriteTimeUtc)
                     {
                         sourceFile.CopyTo(destFile.FullName, overwrite: true);
+                        output.Debug($"Overwritten '{destFile.FullName}' with {sourceFile.Name}");
                     }
                 }
 
