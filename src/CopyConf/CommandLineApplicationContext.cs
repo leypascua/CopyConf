@@ -16,7 +16,7 @@ namespace CopyConf
         const int BadCommandExitCode = 24;
 
         private static readonly string _commandName = typeof(Program).Assembly.GetName().Name;
-        private static readonly string[] _defaultExtensions = new string[] { ".conf", ".config", ".json", ".yaml", ".yml", ".xml" };
+        private static readonly string[] _defaultExtensions = new string[] { ".conf", ".config", ".json", ".yaml", ".yml", ".xml", ".env" };
         private readonly CommandOption _rootOnly;
         private readonly CommandOption _supportedExtensions;
         private readonly CommandOption _forceCreate;
