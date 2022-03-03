@@ -19,7 +19,8 @@
     <NeutralLanguage>en-PH</NeutralLanguage>
     
     <PackageId>CopyConf</PackageId>
-    <PackageProjectUrl>https://github.com/leypascua/CopyConf</PackageProjectUrl>
+	<Title>CopyConf</Title>
+	<PackageProjectUrl>https://github.com/leypascua/CopyConf</PackageProjectUrl>
     <RepositoryUrl>https://github.com/leypascua/CopyConf</RepositoryUrl>        
     <RepositoryType>Git</RepositoryType>    
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
