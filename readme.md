@@ -4,8 +4,11 @@ A command line tool to copy default config files from a specified location to an
 
 ## Installation
 
-Add via dotnet CLI
+Add via dotnet CLI  
+
+```bash
    dotnet tool install copyconf -g
+```
 
 ## How it works
 
