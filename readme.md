@@ -4,16 +4,8 @@ A command line tool to copy default config files from a specified location to an
 
 ## Installation
 
-Add via NuGet Package Console
-   Install-Package CopyConf
-
-OR use as a dotnet CLI tool by editing the .csproj file:
-
-```xml
-
-  <DotNetCliToolReference Include="CopyConf" />
-
-```
+Add via dotnet CLI
+   dotnet tool install copyconf -g
 
 ## How it works
 
@@ -45,24 +37,16 @@ Add it as a pre/post-build command in your .csproj file:
 ```
 
 <Target Name="PreBuild" AfterTargets="PreBuildEvent">
-   <Exec Command="dotnet copyconf &quot;$(SolutionDir)conf&quot; &quot;$(ProjectDir)&quot;" Condition="'$(Configuration)' == 'Debug' />
+   <Exec Command="copyconf &quot;$(SolutionDir)conf&quot; &quot;$(ProjectDir)&quot;" Condition="'$(Configuration)' == 'Debug' />
 </Target>
 
 ```
 
-OR manually execute via the dotnet CLI:
+OR manually run on the command line:
 
 ```bash
 
-   $> dotnet copyconf "C:/project/conf" "C:/project/src/MyWebProject"
-
-```
-
-OR manually execute using the executable when using in non-dotnetcore projects:
-
-```bash
-
-   $> dotnet-copyconf "C:/project/conf" "C:/project/src/MyWebProject"
+   $> copyconf "C:/project/conf" "C:/project/src/MyWebProject"
 
 ```
 
@@ -70,20 +54,24 @@ OR manually execute using the executable when using in non-dotnetcore projects:
 
 ```bash
 
-Usage: dotnet-copyconf sourceDir destinationDir [options]
+Usage: copyconf [options] <sourceDir> <destinationDir>
 
-Arguments:  
-  sourceDir       "/path/to/source" [REQUIRED] The path to the directory where default content will be copied from.  
-  destinationDir  "/path/to/dest" [REQUIRED] The path to the directory where files will be copied to  
+Arguments:
+  sourceDir        "/path/to/source" The path to the directory where default
+                   content will be copied from.
+  destinationDir   "/path/to/dest" The path to the directory where files will be
+                   copied to
 
-Options:  
-  -?|-h|--help     Show help information  
-  -e|--extensions  [OPTIONAL] Supported file extensions delimited by semi-colon. Defaults to: ".conf;.config;.json;.yaml;.yml;.xml"  
-  -r|--rootonly    [OPTIONAL] Prevent files in subdirectories from being copied  
-  -f|--force       [OPTIONAL] Force create destination directory when it doesn't exist.  
-  -v|--verbose     [OPTIONAL] Verbose mode.  
+Options:
+  -?|-h|--help     Show help information.
+  -e|--extensions  [OPTIONAL] Supported file extensions delimited by semi-colon.
+                   Defaults to: ".conf;.config;.json;.yaml;.yml;.xml;.env"
+  -r|--rootonly    [OPTIONAL] Prevent files in subdirectories from being copied
+  -f|--force       [OPTIONAL] Force create destination directory when it doesn't
+                   exist.
+  -v|--verbose     [OPTIONAL] Verbose mode.
 
 Syntax:  
-  dotnet-copyconf sourceDir destinationDir [--extensions=".conf;.config;.json;.yaml;.yml;.xml"] [--rootonly] [--force]  
+  copyconf sourceDir destinationDir [--extensions=".conf;.config;.json;.yaml;.yml;.xml;.env"] [--rootonly] [--force]
 
 ```
